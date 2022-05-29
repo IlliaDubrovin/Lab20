@@ -1,0 +1,22 @@
+<html>
+
+<head>
+  <title>iRock - #############</title>
+</head>
+<script>
+  function touchRock() {
+    const userName = prompt('Whats your name?', 'Enter your name')
+    if (userName) {
+      alert('Glad to see you ' + userName);
+      document.getElementById("rockImg").src = "./rock_happy.png";
+    }
+  }
+</script>
+
+<body onload="alert('вітаю, я - камінь віртуальний')">
+  <div style="margin-top:100px; text-align:center">
+    <img id="rockImg" src="./rock.png" alt="iRock" style="cursor:pointer" onclick="touchRock();" />
+  </div>
+</body>
+
+</html>
