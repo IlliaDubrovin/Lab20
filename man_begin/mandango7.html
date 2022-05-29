@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Mandango - Билет в кино для Мачо</title>
+  <script>
+    var seats = [[false, true, false, true, true, true, false, true, false],
+    [false, true, false, false, true, false, true, true, true],
+    [true, true, true, true, true, true, false, true, false],
+    [true, true, true, false, true, false, false, true, false]];
+    let selSeat = -1;
+    let NumSeats = [];
+    console.log(seats)
+
+    function getSeatStatus(row, col) {
+      if (NumSeats.includes(`seat${row}-${col}`)) {
+        return 'yours'
+      } else if(seats[row][col]) {
+        return 'free'
+      } else {
+        return 'reserved'
+      }
+    }
+
+    function showSeatStatus(row, col) {
+      alert('This seat is ' + getSeatStatus(row, col))
+    }
+
+    function initSeats() {
+      for (let i = 0; i < seats.length; i++) {
+        const container = document.getElementById(`seat-container${i}`);
+        container.innerHTML = '';
+        for (let j = 0; j < seats[i].length; j++) {
+          if (seats[i][j]) {
+            const node = `<img id="seat${i}-${j}" src="./seat_avail.png" alt="Место свободно" onclick="showSeatStatus(${i}, ${j})">`
+            const child = document.createRange().createContextualFragment(node);
+            container.appendChild(child);
+          }
+          else {
+            const node = `<img id="seat${i}-${j}" src="./seat_unavail.png" alt="Место занято" onclick="showSeatStatus(${i}, ${j})">`
+            const child = document.createRange().createContextualFragment(node);
+            container.appendChild(child);
+          }
+        }
+      }
+    }
+
+    function setSeat(row, col, status, description) {
+      document.getElementById(`seat${row}-${col}`).src = `${status}`;
+      document.getElementById(`seat${row}-${col}`).alt = description;
+      document.getElementById(`seat${row}-${col + 1}`).src = `${status}`;
+      document.getElementById(`seat${row}-${col + 1}`).alt = description;
+      document.getElementById(`seat${row}-${col + 2}`).src = `${status}`;
+      document.getElementById(`seat${row}-${col + 2}`).alt = description;
+    }
+
+
+    function findSeat() {
+      if (selSeat >= 0) {
+        selSeat = -1;
+        initSeats();
+      }
+
+      let i = 0, finished = false;
+      while ((i <= seats.length) && !finished) {
+        let j = 0;
+        while ((j <= seats[i].length) && !finished) {
+          if (seats[i][j] && seats[i][j + 1] && seats[i][j + 2]) {
+            selSeat = i;
+            let accept = confirm(`Ряд:${i + 1} Место:${j + 1}-${j + 3} свободно. Принять?`);
+            if (!accept) {
+              selSeat = -1;
+              setSeat(i, j, 'seat_avail.png', 'Место свободно')
+            } else {
+              finished = true;
+              NumSeats = [`seat${i}-${j}`, `seat${i}-${j + 1}`, `seat${i}-${j + 2}`]
+              setSeat(i, j, 'seat_select.png', 'Ваше место')
+            }
+          }
+          j++;
+        }
+        i++;
+      }
+    }
+  </script>
+</head>
+
+<body onload="initSeats();">
+  <input type="button" id="findseat" value="Найти место" onclick="findSeat();">
+  <div style="margin-top:75px; text-align:center" id="seat-container0"></div>
+  <div style="margin-top:75px; text-align:center" id="seat-container1"></div>
+  <div style="margin-top:75px; text-align:center" id="seat-container2"></div>
+  <div style="margin-top:75px; text-align:center" id="seat-container3"></div>
+</body>
+
+</html>
